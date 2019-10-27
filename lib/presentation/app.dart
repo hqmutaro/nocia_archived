@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nocia/presentation/nocia_theme.dart';
-import 'package:nocia/presentation/home/main.dart';
+import 'package:nocia/presentation/splash.dart';
+import 'package:nocia/presentation/nocia.dart';
 
 class App extends StatelessWidget {
 
@@ -8,9 +8,9 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NociaTheme(
+    return Nocia(
       title: "Nocia",
-      home: Home(),
+      home: Splash(),
     );
   }
 }
