@@ -1,4 +1,4 @@
-package nocia.nitf.me.nocia
+package me.nitf.nocia
 
 import android.os.Bundle
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nocia/presentation/report_calculation/calculation_board.dart';
 import 'package:nocia/presentation/time_table/display.dart';
-import 'package:titled_navigation_bar/titled_navigation_bar.dart';
 import 'news/main.dart';
 
 class Test extends StatefulWidget {

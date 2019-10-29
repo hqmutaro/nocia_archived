@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nocia/presentation/nocia.dart';
+import 'package:http/http.dart' as http;
 
 class Display extends StatefulWidget {
 
@@ -10,9 +13,9 @@ class Display extends StatefulWidget {
 
 class _Display extends State<Display> {
 
-  Map<String, String> subjectMap;
+  Map<String, Map<String, dynamic>> subjectMap;
   Draggable draggable;
-  String selected;
+  Map<String, dynamic> selected;
 
   List<String> subjectList = [
     "化学",
@@ -124,25 +127,45 @@ class _Display extends State<Display> {
           ],
         )
       ),
-      floatingActionButton: PopupMenuButton<String>(
-        initialValue: null,
-        onSelected: (String subject) {
-          setState(() {
-            draggable = Draggable(child: Text(subject), feedback: Icon(Icons.note_add), data: subject);
-            selected = subject;
-          });
-        },
-        itemBuilder: (BuildContext context) {
-          return subjectList.map((String subject) {
-            return PopupMenuItem(
-              child: Text(subject),
-              value: subject,
+      floatingActionButton: FutureBuilder(
+        future: getSubjectDataList(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return PopupMenuButton<String>(
+              initialValue: null,
+              onSelected: (subject) {
+                getSubjectData(subject)
+                    .then((subjectDataMap) {
+                  setState(() {
+                    draggable = Draggable(child: Text(subject), feedback: Icon(Icons.note_add), data: subject);
+                    selected = <String, dynamic>{
+                      "name" : subject,
+                      "staffs" : subjectDataMap["staffs"]
+                    };
+                  });
+                });
+              },
+              itemBuilder: (BuildContext context) {
+                var items = <PopupMenuItem<String>>[];
+                snapshot.data.forEach((subjectDataMap) {
+                  items.add(
+                      PopupMenuItem(
+                        child: Text(subjectDataMap["name"]),
+                        value: subjectDataMap["name"],
+                      )
+                  );
+                });
+                print(items);
+                return items;
+              },
             );
-          }).toList();
+          }
+          return Container();
         },
       )
     );
   }
+
 
   Container _createTimeCell(String period, String startTime, String finishTime) {
     return Container(
@@ -214,8 +237,16 @@ class _Display extends State<Display> {
     return DragTarget(
       builder: (context, candidateData, rejectedData) {
         print("DragTarget.builder: candidateData: $candidateData, rejectedData: $rejectedData");
-        var subject = this.subjectMap[cell];
-        var teacher = "M教授";
+        if (this.subjectMap[cell] == null) {
+          this.subjectMap[cell] = {
+            "name" : null,
+            "staffs" : [""]
+          };
+        }
+        var cellData = this.subjectMap[cell];
+
+        var subject = cellData["name"];
+        var teacher = cellData["staffs"].first;
         if (teacher.length > 3) {
           teacher = teacher.substring(0, 2) + "…";
         }
@@ -242,7 +273,7 @@ class _Display extends State<Display> {
                           Container(
                             child: Center(
                               child: Text(
-                                subject == null ? "" : teacher,
+                                subject == null ? "" : teacher.substring(0, 2) + "…",
                                 style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold
@@ -275,7 +306,19 @@ class _Display extends State<Display> {
                 builder: (context) {
                   return SimpleDialog(
                     children: <Widget>[
-                      Text(subject)
+                      Text(subject),
+                      Text(subjectMap[cell]["staffs"].toString()),
+                      FloatingActionButton(
+                        child: Text("削除"),
+                        onPressed: () {
+                          setState(() {
+                            subjectMap[cell] = <String, dynamic>{
+                              "name" : null,
+                              "staffs" : [""]
+                            };
+                          });
+                        },
+                      )
                     ],
                   );
                 }
@@ -286,22 +329,60 @@ class _Display extends State<Display> {
             setState(() {
               subjectMap[cell] = selected;
             });
-          }
+          },
+          onLongPress: () {
+            setState(() {
+              subjectMap[cell] = <String, dynamic>{
+                "name" : null,
+                "staffs" : [""]
+              };
+            });
+          },
         );
       },
       onWillAccept: (data) {
         print("DragTarget.onWillAccept: data: $data");
         return true;
       },
-      onAccept: (data) {
+      onAccept: (data) async{
         print("DragTarget.onAccept: data: $data");
+        var subjectDataMap = await getSubjectData(data);
         setState(() {
-          subjectMap[cell] = data;
+          subjectMap[cell] = {
+            "name" : subjectDataMap["name"],
+            "staffs" : subjectDataMap["staffs"]
+          };
         });
       },
       onLeave: (data) {
         print("DragTarget.onLeave: data: $data");
       },
     );
+  }
+
+  Future<dynamic> getSubjectDataList() async{
+      try {
+        var response = await http.get("https://api.siketyan.dev/syllabus/subjects.php?school=51&department=13");
+        return json.decode(response.body) as List;
+      }
+      catch (e) {
+        print(e);
+        return await getSubjectDataList();
+      }
+  }
+
+  Future<Map<String, dynamic>> getSubjectData(String subject) async{
+    try {
+      var response = await http.get("https://api.siketyan.dev/syllabus/subjects.php?school=51&department=13");
+      var subjectDataList =  json.decode(response.body) as List;
+      var aaa = subjectDataList
+          .where((subjectDataMap) => subjectDataMap["name"] == subject)
+      .first;
+      print("aiuo $aaa");
+      return aaa;
+    }
+    catch (e) {
+      return await getSubjectData(subject);
+    }
   }
 }
