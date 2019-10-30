@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nocia/domain/department.dart';
+import 'package:nocia/domain/term.dart';
+import 'package:nocia/infrastructure/repository/server_subject_data_repository.dart';
+import 'package:nocia/infrastructure/repository/server_subject_list_repository.dart';
 import 'package:nocia/presentation/nocia.dart';
 import 'package:http/http.dart' as http;
 
@@ -48,6 +52,7 @@ class _Display extends State<Display> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: const Color(0xFFf0f0f0),
       drawer: Nocia.getDrawer(),
@@ -146,12 +151,12 @@ class _Display extends State<Display> {
                 });
               },
               itemBuilder: (BuildContext context) {
-                var items = <PopupMenuItem<String>>[];
-                snapshot.data.forEach((subjectDataMap) {
+                var items = <PopupMenuEntry<String>>[];
+                snapshot.data.forEach((subject) {
                   items.add(
                       PopupMenuItem(
-                        child: Text(subjectDataMap["name"]),
-                        value: subjectDataMap["name"],
+                        child: Text(subject),
+                        value: subject,
                       )
                   );
                 });
@@ -299,25 +304,63 @@ class _Display extends State<Display> {
               ],
             ),
           ),
-          onTap: () {
+          onTap: () async{
             if (subject != null) {
+              var subjectDataMap = await getSubjectData(subject);
               showDialog(
                 context: context,
                 builder: (context) {
+                  var classInfo = "";
+                  var classes = subjectDataMap["classes"] as List;
+                  classes.forEach((classData) {
+                    classInfo += classData["grade"].toString() + "学年\n";
+                    if (getTerm(classData["term"]) == Term.First) {
+                      classInfo += "前期\n";
+                    }
+                    else {
+                      classInfo += "後期\n";
+                    }
+                    classInfo += "単位数: " + classData["count"].toString() + "\n\n";
+                  });
                   return SimpleDialog(
                     children: <Widget>[
-                      Text(subject),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, left: 5),
+                        child: Text(
+                            subject,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25
+                          ),
+                        ),
+                      ),
                       Text(subjectMap[cell]["staffs"].toString()),
-                      FloatingActionButton(
-                        child: Text("削除"),
-                        onPressed: () {
-                          setState(() {
-                            subjectMap[cell] = <String, dynamic>{
-                              "name" : null,
-                              "staffs" : [""]
-                            };
-                          });
-                        },
+                      Text(subjectDataMap["types"].toString()),
+                      Text(classInfo),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5, left: 60),
+                        child: Row(
+                          children: <Widget>[
+                            FlatButton(
+                              child: Text("閉じる"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text("削除"),
+                              onPressed: () {
+                                setState(() {
+                                  subjectMap[cell] = <String, dynamic>{
+                                    "name" : null,
+                                    "staffs" : [""]
+                                  };
+                                  Navigator.pop(context);
+                                });
+                              },
+                            )
+                          ],
+                        ),
                       )
                     ],
                   );
@@ -341,11 +384,9 @@ class _Display extends State<Display> {
         );
       },
       onWillAccept: (data) {
-        print("DragTarget.onWillAccept: data: $data");
         return true;
       },
       onAccept: (data) async{
-        print("DragTarget.onAccept: data: $data");
         var subjectDataMap = await getSubjectData(data);
         setState(() {
           subjectMap[cell] = {
@@ -354,35 +395,18 @@ class _Display extends State<Display> {
           };
         });
       },
-      onLeave: (data) {
-        print("DragTarget.onLeave: data: $data");
-      },
     );
   }
 
   Future<dynamic> getSubjectDataList() async{
-      try {
-        var response = await http.get("https://api.siketyan.dev/syllabus/subjects.php?school=51&department=13");
-        return json.decode(response.body) as List;
-      }
-      catch (e) {
-        print(e);
-        return await getSubjectDataList();
-      }
+    var repository = ServerSubjectListRepository();
+    var subjectList = await repository.subjectList(Department.MEDIA_INFORMATION_ENGINEERING, 5, Term.Final);
+    return subjectList;
   }
 
-  Future<Map<String, dynamic>> getSubjectData(String subject) async{
-    try {
-      var response = await http.get("https://api.siketyan.dev/syllabus/subjects.php?school=51&department=13");
-      var subjectDataList =  json.decode(response.body) as List;
-      var aaa = subjectDataList
-          .where((subjectDataMap) => subjectDataMap["name"] == subject)
-      .first;
-      print("aiuo $aaa");
-      return aaa;
-    }
-    catch (e) {
-      return await getSubjectData(subject);
-    }
+  Future<dynamic> getSubjectData(String subject) async{
+    var repository = ServerSubjectDataRepository();
+    var subjectData = repository.subjectData(subject, Department.MEDIA_INFORMATION_ENGINEERING, 5, Term.Final);
+    return subjectData;
   }
 }
