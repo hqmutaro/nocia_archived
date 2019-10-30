@@ -7,9 +7,9 @@ import 'package:nocia/infrastructure/repository/server_subject_data_repository.d
 class ServerSubjectListRepository extends SubjectListRepository {
 
   @override
-  Future<List<String>> subjectList(Department department, int grade, Term term, {Course course}) async{
+  Future<List<dynamic>> subjectList(Department department, int grade, Term term, {Course course}) async{
     var repository = ServerSubjectDataRepository();
-    var subjectDataList = await repository.subjectData(department, grade, term, course: course);
-    return subjectDataList.map((subjectDataMap) => subjectDataMap["name"]);
+    var subjectDataList = await repository.subjectDataList(department, grade, term, course: course);
+    return subjectDataList.map((subjectDataMap) => subjectDataMap["name"]).toList();
   }
 }
