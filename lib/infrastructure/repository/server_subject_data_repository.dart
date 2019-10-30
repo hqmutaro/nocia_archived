@@ -13,7 +13,7 @@ class ServerSubjectDataRepository extends SubjectDataRepository {
   final int schoolId = 51;
 
   @override
-  Future<List<dynamic>> subjectData(Department department, int grade, Term term, {Course course}) async{
+  Future<dynamic> subjectDataList(Department department, int grade, Term term, {Course course}) async{
     var departmentId;
     if (department == Department.ADVANCED) {
       departmentId = getCourseId(course);
@@ -22,7 +22,22 @@ class ServerSubjectDataRepository extends SubjectDataRepository {
       departmentId = getDepartmentId(department);
     }
     var response = await http.get(apiUrl + schoolUrl + schoolId.toString() + departmentUrl + departmentId.toString());
-    var jsonData = json.decode(response.body) as List<dynamic>;
-    return jsonData;
+    var subjectList = json.decode(response.body) as List<dynamic>;
+    var subjectDataList = <Map<String, dynamic>>[];
+    subjectList.forEach((subjectData) {
+      var classes = subjectData["classes"];
+      classes.forEach((classData) {
+        if ((classData["grade"] == grade) && (getTerm(classData["term"]) == term)) {
+          subjectDataList.add(subjectData);
+        }
+      });
+    });
+    return subjectDataList;
+  }
+
+  @override
+  Future<dynamic> subjectData(String name, Department department, int grade, Term term) async{
+    var subjectList = await subjectDataList(department, grade, term);
+    return subjectList.where((subjectData) => subjectData["name"] == name).first;
   }
 }
