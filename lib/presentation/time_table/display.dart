@@ -6,7 +6,7 @@ import 'package:nocia/domain/department.dart';
 import 'package:nocia/domain/term.dart';
 import 'package:nocia/infrastructure/repository/server_subject_data_repository.dart';
 import 'package:nocia/infrastructure/repository/server_subject_list_repository.dart';
-import 'package:nocia/presentation/nocia.dart';
+import 'package:nocia/presentation/nocia_theme.dart';
 import 'package:http/http.dart' as http;
 
 class Display extends StatefulWidget {
@@ -55,8 +55,41 @@ class _Display extends State<Display> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFf0f0f0),
-      drawer: Nocia.getDrawer(),
-      appBar: Nocia.getAppBar("時間割"),
+      drawer: Drawer(
+          child: ListView(
+            children: <Widget> [
+              DrawerHeader(
+                  decoration: BoxDecoration(
+                      color: Colors.indigo
+                  ),
+                  child: null
+              ),
+              ListTile(
+                title: Text('First Menu Item'),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text('Second Menu Item'),
+                onTap: () {},
+              ),
+              Divider(),
+              ListTile(
+                title: Text('About'),
+                onTap: () {},
+              ),
+            ],
+          )
+      ),
+      appBar: AppBar(
+        title: Text("時間割"),
+        centerTitle: true,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Icon(Icons.settings),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

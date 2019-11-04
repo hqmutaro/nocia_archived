@@ -10,7 +10,7 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
-      seconds: 3,
+      seconds: 0,
       navigateAfterSeconds: Test(),
       title: Text("Nocia"),
       backgroundColor: Colors.white,
