@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 import 'package:nocia/domain/department.dart';
+import 'package:nocia/domain/repository/repository.dart';
 import 'package:nocia/domain/repository/subject_data_repository.dart';
 import 'package:nocia/domain/term.dart';
 import 'package:http/http.dart' as http;
 
-class ServerSubjectDataRepository extends SubjectDataRepository {
+class ServerSubjectDataRepository extends SubjectDataRepository implements Repository {
 
   final String apiUrl = "https://api.siketyan.dev/syllabus/subjects.php";
   final String schoolUrl = "?school=";
   final String departmentUrl = "&department=";
-  final int schoolId = 51;
+  final int schoolId = 51; // NIT, Okinawa College
 
   @override
   Future<dynamic> subjectDataList(Department department, int grade, Term term, {Course course}) async{

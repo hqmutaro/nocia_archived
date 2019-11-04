@@ -1,10 +1,11 @@
 import 'package:nocia/domain/department.dart';
+import 'package:nocia/domain/repository/repository.dart';
 import 'package:nocia/domain/repository/subject_list_repository.dart';
 import 'package:nocia/domain/term.dart';
 
 import 'package:nocia/infrastructure/repository/server_subject_data_repository.dart';
 
-class ServerSubjectListRepository extends SubjectListRepository {
+class ServerSubjectListRepository extends SubjectListRepository implements Repository {
 
   @override
   Future<List<dynamic>> subjectList(Department department, int grade, Term term, {Course course}) async{
