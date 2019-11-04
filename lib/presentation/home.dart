@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nocia/presentation/nocia_theme.dart';
 import 'package:nocia/presentation/report_calculation/calculation_board.dart';
 import 'package:nocia/presentation/time_table/display.dart';
 import 'news/main.dart';
@@ -24,25 +25,32 @@ class _Test extends State<Test> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _page,
-            onTap: onTapBottomNavigation,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.info),
-                  title: Text("ニュース")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.table_chart),
-                  title: Text("時間割")
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.keyboard),
-                  title: Text("届作成")
-              ),
-            ]
+    final makeBottom = Container(
+      height: 55.0,
+      child: BottomAppBar(
+        color: Color.fromRGBO(58, 66, 86, 1.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.info, color: Colors.white),
+              onPressed: () {onTapBottomNavigation(0);},
+            ),
+            IconButton(
+              icon: Icon(Icons.table_chart, color: Colors.white),
+              onPressed: () {onTapBottomNavigation(1);},
+            ),
+            IconButton(
+              icon: Icon(Icons.keyboard, color: Colors.white),
+              onPressed: () {onTapBottomNavigation(2);},
+            ),
+          ],
         ),
+      ),
+    );
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        bottomNavigationBar: makeBottom,
         body: PageView(
           controller: _pageController,
           onPageChanged: onPageChanged,

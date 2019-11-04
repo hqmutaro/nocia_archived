@@ -1,22 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:nocia/presentation/nocia.dart';
 import 'package:webfeed/domain/rss_item.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 
-class NewsViews extends StatefulWidget {
+class SchoolNewsView extends StatefulWidget {
 
   RssItem item;
 
-  NewsViews({@required this.item});
+  SchoolNewsView({@required this.item});
 
   @override
-  _NewsViews createState() => _NewsViews();
+  _SchoolNewsView createState() => _SchoolNewsView();
 }
 
-class _NewsViews extends State<NewsViews> {
+class _SchoolNewsView extends State<SchoolNewsView> {
 
   WebViewController _controller;
 
@@ -25,7 +22,6 @@ class _NewsViews extends State<NewsViews> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item.title),
-        backgroundColor: Nocia.themeColor,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),

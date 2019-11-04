@@ -14,33 +14,31 @@ enum Course {
 }
 
 int getDepartmentId(Department department) {
-  if (department == Department.MECHANICAL_SYSTEMS_ENGINEERING) {
-    return 11;
+  switch (department) {
+    case Department.MECHANICAL_SYSTEMS_ENGINEERING:
+      return 11;
+    case Department.INFORMATION_AND_COMMUNICATION_SYSTEMS_ENGINEERING:
+      return 12;
+    case Department.MEDIA_INFORMATION_ENGINEERING:
+      return 13;
+    case Department.BIOLOGICAL_RESOURCES_ENGINEERING:
+      return 14;
+    default:
+      throw Exception("Department Not Found");
   }
-  if (department == Department.INFORMATION_AND_COMMUNICATION_SYSTEMS_ENGINEERING) {
-    return 12;
-  }
-  if (department == Department.MEDIA_INFORMATION_ENGINEERING) {
-    return 13;
-  }
-  if (department == Department.BIOLOGICAL_RESOURCES_ENGINEERING) {
-    return 14;
-  }
-  throw Exception("Department Not Found");
 }
 
 int getCourseId(Course course) {
-  if (course == Course.MECHANICAL_SYSTEMS_ENGINEERING) {
-    return 21;
+  switch (course) {
+    case Course.MECHANICAL_SYSTEMS_ENGINEERING:
+      return 21;
+    case Course.ELECTRONIC_COMMUNICATION_SYSTEMS_ENGINEERING:
+      return 22;
+    case Course.INFORMATION_ENGINEERING:
+      return 23;
+    case Course.BIO_RESOURCES_ENGINEERING:
+      return 24;
+    default:
+      throw Exception("Course Not Found");
   }
-  if (course == Course.ELECTRONIC_COMMUNICATION_SYSTEMS_ENGINEERING) {
-    return 22;
-  }
-  if (course == Course.INFORMATION_ENGINEERING) {
-    return 23;
-  }
-  if (course == Course.BIO_RESOURCES_ENGINEERING) {
-    return 24;
-  }
-  throw Exception("Course Not Found");
 }
