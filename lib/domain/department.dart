@@ -28,6 +28,21 @@ int getDepartmentId(Department department) {
   }
 }
 
+Department getDepartment(int id) {
+  switch (id) {
+    case 11:
+      return Department.MECHANICAL_SYSTEMS_ENGINEERING;
+    case 12:
+      return Department.INFORMATION_AND_COMMUNICATION_SYSTEMS_ENGINEERING;
+    case 13:
+      return Department.MEDIA_INFORMATION_ENGINEERING;
+    case 14:
+      return Department.BIOLOGICAL_RESOURCES_ENGINEERING;
+    default:
+      throw Exception("ID Not Found");
+  }
+}
+
 int getCourseId(Course course) {
   switch (course) {
     case Course.MECHANICAL_SYSTEMS_ENGINEERING:
@@ -40,5 +55,20 @@ int getCourseId(Course course) {
       return 24;
     default:
       throw Exception("Course Not Found");
+  }
+}
+
+Course getCourse(int id) {
+  switch (id) {
+    case 21:
+      return Course.MECHANICAL_SYSTEMS_ENGINEERING;
+    case 22:
+      return Course.ELECTRONIC_COMMUNICATION_SYSTEMS_ENGINEERING;
+    case 23:
+      return Course.INFORMATION_ENGINEERING;
+    case 24:
+      return Course.BIO_RESOURCES_ENGINEERING;
+    default:
+      throw Exception("ID Not Found");
   }
 }
