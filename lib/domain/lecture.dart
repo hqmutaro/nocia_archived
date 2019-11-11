@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:nocia/domain/entity.dart';
 import 'package:nocia/domain/term.dart';
 
-class Subject extends Entity {
+class Lecture extends Entity {
 
   final String name;
   final List<String> staffList;
   final num grade;
   final Term term;
 
-  Subject({
+  Lecture({
     @required this.name,
     @required this.staffList,
     @required this.grade,

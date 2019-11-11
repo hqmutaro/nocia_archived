@@ -10,5 +10,16 @@ Term getTerm(int term) {
   if (term == 1) {
     return Term.Final;
   }
-  throw Exception("Not Found This Term");
+  throw Exception("This Term Not Found");
+}
+
+int getTermId(Term term) {
+  switch (term) {
+    case Term.First:
+      return 0;
+    case Term.Final:
+      return 1;
+    default:
+      throw Exception("ID Not Found");
+  }
 }

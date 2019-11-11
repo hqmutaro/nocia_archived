@@ -16,16 +16,6 @@ class _CalculationBoard extends State<CalculationBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("届作成"),
-        centerTitle: true,
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.settings),
-          )
-        ],
-      ),
       body: Column(
         children: <Widget>[
         ],

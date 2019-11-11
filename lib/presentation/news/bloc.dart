@@ -14,11 +14,11 @@ class NewsStream {
   NewsStream({@required this.repository});
 }
 
-class NotUpdated implements NewsEvent{
+class NotUpdated implements NewsEvent {
   final Repository repository = null;
 }
 
-class UpdateNociaNews implements NewsEvent{
+class UpdateNociaNews implements NewsEvent {
   final FirebaseNewsRepository repository = FirebaseNewsRepository();
 }
 

@@ -14,7 +14,7 @@ class ServerSubjectDataRepository extends SubjectDataRepository implements Repos
   final int schoolId = 51; // NIT, Okinawa College
 
   @override
-  Future<dynamic> subjectDataList(Department department, int grade, Term term, {Course course}) async{
+  Future<dynamic> subjectDataList(Department department, Term term, int grade, {Course course}) async{
     var departmentId;
     if (department == Department.ADVANCED) {
       departmentId = getCourseId(course);
@@ -27,6 +27,7 @@ class ServerSubjectDataRepository extends SubjectDataRepository implements Repos
     var subjectDataList = <Map<String, dynamic>>[];
     subjectList.forEach((subjectData) {
       var classes = subjectData["classes"];
+
       classes.forEach((classData) {
         if ((classData["grade"] == grade) && (getTerm(classData["term"]) == term)) {
           subjectDataList.add(subjectData);
@@ -38,7 +39,12 @@ class ServerSubjectDataRepository extends SubjectDataRepository implements Repos
 
   @override
   Future<dynamic> subjectData(String name, Department department, int grade, Term term) async{
-    var subjectList = await subjectDataList(department, grade, term);
+    var subjectList = await subjectDataList(department, term, grade);
     return subjectList.where((subjectData) => subjectData["name"] == name).first;
+  }
+
+  Future<dynamic> subjectDataId(int id, Department department, int grade, Term term) async{
+    var subjectList = await subjectDataList(department, term, grade);
+    return subjectList.where((subjectData) => subjectData["id"] == id.toString()).first;
   }
 }

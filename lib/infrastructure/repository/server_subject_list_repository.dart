@@ -10,7 +10,7 @@ class ServerSubjectListRepository extends SubjectListRepository implements Repos
   @override
   Future<List<dynamic>> subjectList(Department department, int grade, Term term, {Course course}) async{
     var repository = ServerSubjectDataRepository();
-    var subjectDataList = await repository.subjectDataList(department, grade, term, course: course);
+    var subjectDataList = await repository.subjectDataList(department, term, grade, course: course);
     return subjectDataList.map((subjectDataMap) => subjectDataMap["name"]).toList();
   }
 }

@@ -51,7 +51,14 @@ class NociaTheme extends StatelessWidget {
           color: this.theme == Theme.DARK ? darkTheme : lightTheme
         ),
         cardColor: this.theme == Theme.DARK ? usuidark : lightTheme,
-        scaffoldBackgroundColor: this.theme == Theme.DARK ? darkTheme : lightTheme
+        dialogTheme: DialogTheme(
+          backgroundColor: this.theme == Theme.DARK ? usuidark : lightTheme,
+          titleTextStyle: TextStyle(
+            color: this.theme == Theme.DARK ? Colors.white : Colors.black
+          ),
+        ),
+        scaffoldBackgroundColor: this.theme == Theme.DARK ? darkTheme : lightTheme,
+        buttonColor: this.theme == Theme.DARK ? usuidark : lightTheme
       ),
       home: this.home
     );
