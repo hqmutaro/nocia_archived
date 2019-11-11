@@ -31,6 +31,14 @@ dependencies:
   flutter_markdown: any
   bloc: ^1.0.0
   flutter_bloc: ^1.0.0
+  firebase_auth: ^0.14.0+5
+  google_sign_in: ^4.0.11
+  intro_slider: ^2.2.8
+  flutter_signin_button: ^0.5.2
+  flutter_twitter_login: ^1.1.0
+  direct_select_flutter: ^1.0.5
+  find_dropdown: ^0.1.7+1
+  custom_radio_grouped_button: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -56,6 +64,9 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+
+  assets:
+    - assets/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
