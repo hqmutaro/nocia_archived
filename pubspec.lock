@@ -291,6 +291,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  radial_button:
+    dependency: "direct main"
+    description:
+      name: radial_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   rect_getter:
     dependency: transitive
     description:
@@ -317,6 +324,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  solid_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: solid_bottom_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.8"
   source_span:
     dependency: transitive
     description:
