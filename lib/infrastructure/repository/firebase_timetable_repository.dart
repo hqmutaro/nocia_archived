@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nocia/domain/lecture.dart';
 import 'package:nocia/domain/repository/timetable_repository.dart';
+import 'package:nocia/domain/term.dart';
 import 'package:nocia/infrastructure/repository/db_reference.dart';
 import 'package:nocia/infrastructure/repository/firebase_user_info_repository.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
@@ -45,7 +47,10 @@ class FirebaseTimetableRepository extends TimetableRepository{
       var timetable = <Map<String, dynamic>>[];
 
       for (var lectureData in list) {
+        // インスタンスが肥大化するのでモデル化は非推奨
+        // モデル化は単講義のセット時に
         var map = <String, dynamic>{
+          "cell": lectureData["cell"],
           "id": lectureData["id"],
           "name": lectureData["name"],
           "staffs": lectureData["staffs"],
@@ -57,5 +62,47 @@ class FirebaseTimetableRepository extends TimetableRepository{
       dayTimetable.add(timetable);
     }
     return dayTimetable;
+  }
+
+  @override
+  Future<void> setLecture(int cell, Lecture lecture) async{
+    var time = 0;
+    var day = cell - 1;
+    while (day > 5) {
+      day -= 5;
+      time++;
+    }
+    await instance().child("user").child(uid)
+    .child("timetable").child(time.toString())
+    .child(day.toString()).set(<String, dynamic>{
+      "cell": cell,
+      "grade": lecture.grade,
+      "id": lecture.id,
+      "name": lecture.name,
+      "staffs": lecture.staffList,
+      "term": getTermId(lecture.term)
+    });
+  }
+
+  @override
+  Future<void> deleteLecture(int cell) async{
+    var time = 0;
+    var day = cell - 1;
+    while (day > 5) {
+      day -= 5;
+      time++;
+    }
+    await instance().child("user").child(uid)
+        .child("timetable").child(time.toString())
+        .child(day.toString()).set(<String, dynamic>{
+          "cell": cell,
+          "grade": null,
+          "id": null,
+          "name": null,
+          "staffs": [],
+          "term": null
+        });
+    //print("Cell[$cell] is TIME = $time , DAY = $day.");
+    // ${time}, ${day} is indicators corresponding to timetable.
   }
 }
