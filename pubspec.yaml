@@ -39,6 +39,10 @@ dependencies:
   direct_select_flutter: ^1.0.5
   find_dropdown: ^0.1.7+1
   custom_radio_grouped_button: ^1.0.0
+  firebase_messaging: ^5.1.8
+  equatable: ^0.6.0
+  radial_button: ^0.1.4
+  solid_bottom_sheet: ^0.1.8
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

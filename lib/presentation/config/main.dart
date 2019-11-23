@@ -4,6 +4,10 @@ import 'package:direct_select_flutter/direct_select_item.dart';
 import 'package:direct_select_flutter/direct_select_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nocia/application/user/user_bloc.dart';
+import 'package:nocia/application/user/user_event.dart';
+import 'package:nocia/application/user/user_state.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 
@@ -74,18 +78,26 @@ class _Config extends State<Config> {
 
   @override
   Widget build(BuildContext context) {
-    var userRepository = UserRepository();
-    return FutureBuilder(
-        future: userRepository.getUser(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
-          if (snapshot.hasData) {
+    final _userBloc = BlocProvider.of<UserBloc>(context);
+    _userBloc.add(RequestUser());
+    return BlocBuilder<UserBloc, UserState>(
+        bloc: _userBloc,
+        builder: (context, stream) {
+          if (stream is UserStream) {
+            if (stream == null) {
+              return Center(child: CircularProgressIndicator());
+            }
             return Scaffold(
               appBar: AppBar(
-                title: Text("設定"),
-                centerTitle: true,
-                leading: Icon(Icons.menu),
+                  title: Text("設定"),
+                  centerTitle: true
               ),
-              drawer: NociaDrawer(user: snapshot.data),
+              drawer: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.white,
+                ),
+                child: NociaDrawer(user: stream.user),
+              ),
               body: DirectSelectContainer(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

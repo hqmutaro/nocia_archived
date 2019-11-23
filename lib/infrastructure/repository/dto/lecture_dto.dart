@@ -6,6 +6,7 @@ class LectureDTO {
   static Lecture decode(Map<String, dynamic> map) {
     return Lecture(
         name: map["name"],
+        id: map["id"],
         staffList: map["staffs"],
         grade: map["grade"],
         term: getTerm(map["term"])

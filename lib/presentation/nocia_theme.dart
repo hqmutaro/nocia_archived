@@ -43,6 +43,7 @@ class NociaTheme extends StatelessWidget {
     return MaterialApp(
       title: this.title,
       theme: ThemeData(
+          canvasColor: Colors.transparent,
         textTheme: this.theme == Theme.DARK ? darkTextTheme : lightTextTheme,
         primaryColor: this.theme == Theme.DARK ? darkTheme : lightTheme,
         bottomAppBarColor: this.theme == Theme.DARK ? darkTheme : lightTheme,
@@ -58,7 +59,8 @@ class NociaTheme extends StatelessWidget {
           ),
         ),
         scaffoldBackgroundColor: this.theme == Theme.DARK ? darkTheme : lightTheme,
-        buttonColor: this.theme == Theme.DARK ? usuidark : lightTheme
+        buttonColor: this.theme == Theme.DARK ? usuidark : lightTheme,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: this.theme == Theme.DARK ? usuidark : lightTheme)
       ),
       home: this.home
     );

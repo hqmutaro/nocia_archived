@@ -11,7 +11,7 @@ class ServiceTwitterAuth implements TwitterAuth {
   );
   final FirebaseAuth _firebaseAuth = instance();
 
-  Future<void> handleSignIn() async{
+  Future<FirebaseUser> handleSignIn() async{
     final TwitterLoginResult result = await _twitterLogin.authorize();
     AuthCredential credential = TwitterAuthProvider.getCredential(
         authToken: result.session.token,
@@ -21,6 +21,7 @@ class ServiceTwitterAuth implements TwitterAuth {
     FirebaseUser user = signIn.user;
     var repository = FirebaseUserInfoRepository(user: user);
     await repository.setUpUserData(name: user.displayName);
+    return user;
   }
 
   Future<void> handleSignOut() => _twitterLogin.logOut();

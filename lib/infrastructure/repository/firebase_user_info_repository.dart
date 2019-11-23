@@ -11,7 +11,7 @@ class FirebaseUserInfoRepository implements UserInfoRepository {
   Future<void> setUpUserData({String name}) async{
     await instance().child("user").child(user.uid).set(<String,dynamic>{
       "name": name,
-      "e-mail": user.email,
+      "timetable": null
     });
   }
 
