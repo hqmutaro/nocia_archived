@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:nocia/application/user/user_bloc.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/infrastructure/service/service_email_auth.dart';
 import 'package:nocia/infrastructure/service/service_google_auth.dart';
@@ -104,7 +106,10 @@ class _LoginScreen extends State<LoginScreen> {
               onPressed: () async{
                 var auth = ServiceEmailAuth();
                 var user = await auth.handleSignIn(email: _email_controller.text, password: _password_controller.text);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BlocProvider<UserBloc>(
+                  builder: (BuildContext context) => UserBloc(),
+                  child: Home(),
+                )));
               },
             ),
             SignInButton(
@@ -113,9 +118,12 @@ class _LoginScreen extends State<LoginScreen> {
               onPressed: () async{
                 showLoader();
                 var auth = ServiceGoogleAuth();
-                var user = await auth.handleSignIn();
+                await auth.handleSignIn();
                 Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BlocProvider<UserBloc>(
+                  builder: (BuildContext context) => UserBloc(),
+                  child: Home(),
+                )));
               },
             ),
             SignInButton(
@@ -124,9 +132,14 @@ class _LoginScreen extends State<LoginScreen> {
               onPressed: () async{
                 try {
                   var auth = ServiceTwitterAuth();
-                  await auth.handleSignIn();
-                  var user = await UserRepository().getUser();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Home(user: user)));
+                  var user = await auth.handleSignIn();
+                  if (user != null) {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => BlocProvider<UserBloc>(
+                      builder: (BuildContext context) => UserBloc(),
+                      child: Home(),
+                    )));
+                  }
                 }
                 catch (e) {
                   throw e;
