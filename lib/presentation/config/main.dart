@@ -92,7 +92,12 @@ class _Config extends State<Config> {
                   title: Text("設定"),
                   centerTitle: true
               ),
-              drawer: NociaDrawer(user: stream.user),
+              drawer: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.white,
+                ),
+                child: NociaDrawer(user: stream.user),
+              ),
               body: DirectSelectContainer(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

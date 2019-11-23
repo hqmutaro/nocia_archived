@@ -8,7 +8,7 @@ import 'package:nocia/application/user/user_state.dart';
 import 'package:nocia/domain/user.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/presentation/report_calculation/calculation_board.dart';
-import 'package:nocia/presentation/timetable/display.dart';
+import 'package:nocia/presentation/timetable/main.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 import '../news/main.dart';
 
@@ -133,13 +133,18 @@ class _Home extends State<Home> {
                   title: Text(this.title),
                   centerTitle: true,
                 ),
-                drawer: NociaDrawer(user: state.user),
+                drawer: Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.white,
+                    ),
+                  child: NociaDrawer(user: state.user),
+                ),
                 body: PageView(
                     controller: _pageController,
                     onPageChanged: onPageChanged,
                     children: [
                       News(),
-                      Display(user: state.user),
+                      Timetable(user: state.user),
                       CalculationBoard()
                     ]
                 )
