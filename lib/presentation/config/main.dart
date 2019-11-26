@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nocia/application/user/user_bloc.dart';
 import 'package:nocia/application/user/user_event.dart';
 import 'package:nocia/application/user/user_state.dart';
+import 'package:nocia/infrastructure/repository/firebase_user_info_repository.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 
@@ -87,6 +88,7 @@ class _Config extends State<Config> {
             if (stream == null) {
               return Center(child: CircularProgressIndicator());
             }
+            var userInfoRepository = FirebaseUserInfoRepository(user: stream.user.firebaseUser);
             return Scaffold(
               appBar: AppBar(
                   title: Text("設定"),
@@ -130,9 +132,11 @@ class _Config extends State<Config> {
                                               focusedItemDecoration: _getDslDecoration(),
                                               onItemSelectedListener: (item, index, context) {
                                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("学科: $item")));
+                                                userInfoRepository.updateUserData(key: "department", value: item);
                                                 setState(() {
                                                   if (index == 4) {
                                                     isAdvanced = true;
+                                                    advancedGradeValue = 1;
                                                   }
                                                   else {
                                                     isAdvanced = false;
@@ -181,6 +185,7 @@ class _Config extends State<Config> {
                                               focusedItemDecoration: _getDslDecoration(),
                                               onItemSelectedListener: (item, index, context) {
                                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("コース: $item")));
+                                                userInfoRepository.updateUserData(key: "course", value: item);
                                                 setState(() {
                                                   courseValue = index;
                                                 });
@@ -226,6 +231,7 @@ class _Config extends State<Config> {
                                               focusedItemDecoration: _getDslDecoration(),
                                               onItemSelectedListener: (item, index, context) {
                                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("学年: $item")));
+                                                userInfoRepository.updateUserData(key: "grade", value: index + 1);
                                                 setState(() {
                                                   if (isAdvanced) {
                                                     advancedGradeValue = index;
@@ -259,6 +265,7 @@ class _Config extends State<Config> {
                               buttonLables: ["前期", "後期"],
                               buttonValues: [0, 1],
                               radioButtonValue: (value) {
+                                userInfoRepository.updateUserData(key: "term", value: value);
                                 setState(() {
                                   termValue = value;
                                 });
