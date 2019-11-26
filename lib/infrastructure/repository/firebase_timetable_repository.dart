@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nocia/domain/lecture.dart';
 import 'package:nocia/domain/repository/timetable_repository.dart';
 import 'package:nocia/domain/term.dart';
-import 'package:nocia/infrastructure/repository/db_reference.dart';
+import 'package:nocia/infrastructure/repository/firestore_reference.dart';
 import 'package:nocia/infrastructure/repository/firebase_user_info_repository.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 
@@ -12,6 +12,8 @@ class FirebaseTimetableRepository extends TimetableRepository{
   FirebaseTimetableRepository({@required this.uid}): assert(uid != null);
 
   Future<dynamic> createTimetable() async{
+    /*
+    print("create");
     var timetables = <List<Map<String, dynamic>>>[];
     var timeColumn;
     var range = List<int>.generate(5, (i) => i + 1);
@@ -29,80 +31,141 @@ class FirebaseTimetableRepository extends TimetableRepository{
       });
       timetables.add(timeColumn);
     });
-    print(timetables);
-    await instance().child("user").child(uid).child("timetable").set(timetables);
-    return timetables;
-  }
+   // await instance().child("user").child(uid).child("timetable").set(timetables);
 
-  Future<dynamic> lectureTimetables() async{
-    var user = await UserRepository().getUser();
-    var info = await FirebaseUserInfoRepository(user: user).getUserInfo();
+     */
 
-    var dayTimetable = <List<Map<String, dynamic>>>[];
-    var timetableList = info["timetable"];
-    if (timetableList == null) {
-      timetableList = await createTimetable(); // Initialize Timetable
-    }
-    for (var list in timetableList) {
-      var timetable = <Map<String, dynamic>>[];
+    print("create");
+    var days = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday"
+    ];
+    var timetables = <Map<String, Map<String, dynamic>>>[]; // List: period(n) => <Map < key: day => value: timetable>>
+    var timetable;
 
-      for (var lectureData in list) {
-        // インスタンスが肥大化するのでモデル化は非推奨
-        // モデル化は単講義のセット時に
-        var map = <String, dynamic>{
-          "cell": lectureData["cell"],
-          "id": lectureData["id"],
-          "name": lectureData["name"],
-          "staffs": lectureData["staffs"],
-          "grade": lectureData["grade"],
-          "term": lectureData["term"]
-        };
-        timetable.add(map);
-      }
-      dayTimetable.add(timetable);
-    }
-    return dayTimetable;
-  }
-
-  @override
-  Future<void> setLecture(int cell, Lecture lecture) async{
-    var time = 0;
-    var day = cell - 1;
-    while (day > 5) {
-      day -= 5;
-      time++;
-    }
-    await instance().child("user").child(uid)
-    .child("timetable").child(time.toString())
-    .child(day.toString()).set(<String, dynamic>{
-      "cell": cell,
-      "grade": lecture.grade,
-      "id": lecture.id,
-      "name": lecture.name,
-      "staffs": lecture.staffList,
-      "term": getTermId(lecture.term)
-    });
-  }
-
-  @override
-  Future<void> deleteLecture(int cell) async{
-    var time = 0;
-    var day = cell - 1;
-    while (day > 5) {
-      day -= 5;
-      time++;
-    }
-    await instance().child("user").child(uid)
-        .child("timetable").child(time.toString())
-        .child(day.toString()).set(<String, dynamic>{
+    var cell = 0;
+    var range = List<int>.generate(5, (i) => i + 1);
+    range.forEach((period) {
+      timetable = <String, Map<String, dynamic>>{};
+      days.forEach((day) {
+        cell++; // plus 1
+        //print("cell $cell");
+        //print("day $day");
+        /*
+        timetables[period][day] = <String, dynamic>{
           "cell": cell,
           "grade": null,
           "id": null,
           "name": null,
           "staffs": [],
           "term": null
-        });
-    //print("Cell[$cell] is TIME = $time , DAY = $day.");
-    // ${time}, ${day} is indicators corresponding to timetable.
+        };
+
+         */
+        timetable[day] = <String, dynamic>{
+          "cell": cell,
+          "grade": null,
+          "id": null,
+          "name": null,
+          "staffs": [],
+          "term": null
+        };
+        if (day == "friday") {
+          timetables.add(timetable);
+        }
+      });
+    });
+
+    await instance().collection("user")
+        .document(uid).collection("timetable")
+        .document("period1").setData({"data" : timetables[0]});
+    await instance().collection("user")
+        .document(uid).collection("timetable")
+        .document("period2").setData({"data" : timetables[1]});
+    await instance().collection("user")
+        .document(uid).collection("timetable")
+        .document("period3").setData({"data" : timetables[2]});
+    await instance().collection("user")
+        .document(uid).collection("timetable")
+        .document("period4").setData({"data" : timetables[3]});
+    await instance().collection("user")
+        .document(uid).collection("timetable")
+        .document("period5").setData({"data" : timetables[4]});
+
+    return timetables;
+  }
+
+  Future<dynamic> lectureTimetables() async{
+    var user = await UserRepository().getUser();
+    var info = await FirebaseUserInfoRepository(user: user).getUserInfo();
+    print("aaaa");
+
+    var snapshot = await instance().collection("user").document(uid).collection("timetable").getDocuments();
+    var timetableList = snapshot.documents;
+    if (snapshot.documents == null) {
+      await createTimetable(); // Initialize Timetable
+      var snapshot = await instance().collection("user").document(uid).collection("timetable").getDocuments();
+      timetableList = snapshot.documents; // Get Data Again.
+    }
+    return timetableList.map((doc) => doc.data).toList();
+  }
+
+  @override
+  Future<void> setLecture(int cell, Lecture lecture) async{
+    var days = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday"
+    ];
+    var day = days[(cell % 5) - 1];
+    var period = 1;
+    while (cell > 5) {
+      period++;
+      cell -= 5;
+    }
+    instance().collection("user").document(uid)
+    .collection("timetable").document("period" + period.toString())
+    .updateData({"data.$day" : <String, dynamic>{
+      "cell": cell,
+      "grade": lecture.grade,
+      "id": lecture.id,
+      "name": lecture.name,
+      "staffs": lecture.staffList,
+      "term": getTermId(lecture.term)
+      }
+    });
+  }
+
+  @override
+  Future<void> deleteLecture(int cell) async{
+    var days = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday"
+    ];
+    var day = days[(cell % 5) - 1];
+    var period = 1;
+    while (cell > 5) {
+      period++;
+      cell -= 5;
+    }
+    instance().collection("user").document(uid)
+        .collection("timetable").document("period" + period.toString())
+        .updateData({"data.$day" : <String, dynamic>{
+          "cell": cell,
+          "grade": null,
+          "id": null,
+          "name": null,
+          "staffs": [],
+          "term": null
+        }
+    });
   }
 }

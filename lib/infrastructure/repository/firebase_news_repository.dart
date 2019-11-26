@@ -1,6 +1,6 @@
 import 'package:nocia/domain/repository/news_repository.dart';
 import 'package:nocia/domain/repository/repository.dart';
-import 'package:nocia/infrastructure/repository/db_reference.dart';
+import 'package:nocia/infrastructure/repository/rd_reference.dart';
 
 class FirebaseNewsRepository extends NewsRepository implements Repository {
   @override
