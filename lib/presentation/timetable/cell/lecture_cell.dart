@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nocia/application/user/user_bloc.dart';
-import 'package:nocia/application/user/user_event.dart';
 import 'package:nocia/domain/department.dart';
 import 'package:nocia/domain/term.dart';
 import 'package:nocia/infrastructure/repository/dto/lecture_dto.dart';
@@ -10,23 +7,36 @@ import 'package:nocia/infrastructure/repository/server_subject_data_repository.d
 
 import '../main.dart';
 
-class LectureCell extends StatelessWidget {
+class LectureCell extends StatefulWidget {
   final int cell;
-  final Map<String, dynamic> lecture;
+  final Map<dynamic, dynamic> lecture;
   final String uid;
 
-  const LectureCell(
-    this.cell,
-    this.lecture,
-    this.uid
-  ):  assert(cell != null),
-      assert(lecture != null),
-      assert(uid != null);
+  LectureCell(
+      this.cell,
+      this.lecture,
+      this.uid
+      ):  assert(cell != null),
+        assert(lecture != null),
+        assert(uid != null);
+
+  @override
+  _LectureCell createState() => _LectureCell();
+}
+
+class _LectureCell extends State<LectureCell> {
+  Map<dynamic, dynamic> lecture;
+
+  @override
+  void initState() {
+    super.initState();
+    this.lecture = widget.lecture;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var subject = lecture["name"];
-    var teacher = lecture["staffs"].toString();
+    var subject = this.lecture["name"];
+    var teacher = this.lecture["staffs"].toString();
     return GestureDetector(
       child: Card(
         child: Column(
@@ -103,8 +113,18 @@ class LectureCell extends StatelessWidget {
                       FlatButton(
                         child: Text("削除"),
                         onPressed: () async{
-                          var repository = FirebaseTimetableRepository(uid: uid);
-                          await repository.deleteLecture(cell);
+                          var repository = FirebaseTimetableRepository(uid: widget.uid);
+                          await repository.deleteLecture(widget.cell);
+                          var map = <String, dynamic>{
+                            "name": null,
+                            "id": null,
+                            "staffs": null,
+                            "grade": null,
+                            "term": null
+                          };
+                          setState(() {
+                            this.lecture = map;
+                          });
                           Navigator.pop(context);
                         },
                       )
@@ -117,7 +137,7 @@ class LectureCell extends StatelessWidget {
         }
       },
       onDoubleTap: () async{
-        var repository = FirebaseTimetableRepository(uid: uid);
+        var repository = FirebaseTimetableRepository(uid: widget.uid);
         var data = await getSubjectData(Timetable.lectureValue);
         var map = <String, dynamic>{
           "name": data["name"],
@@ -127,9 +147,10 @@ class LectureCell extends StatelessWidget {
           "term": data["classes"][0]["term"]
         };
         var lecture = LectureDTO.decode(map);
-        await repository.setLecture(cell, lecture);
-        var bloc = BlocProvider.of<UserBloc>(context);
-        bloc.add(RequestUser());
+        setState(() {
+          this.lecture = map;
+        });
+        await repository.setLecture(widget.cell, lecture);
       },
       onLongPress: () {
       },
