@@ -8,11 +8,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nocia/application/user/user_bloc.dart';
 import 'package:nocia/application/user/user_event.dart';
 import 'package:nocia/application/user/user_state.dart';
+import 'package:nocia/domain/department.dart';
+import 'package:nocia/domain/repository/user_info_repository.dart';
+import 'package:nocia/domain/term.dart';
+import 'package:nocia/domain/user.dart';
 import 'package:nocia/infrastructure/repository/firebase_user_info_repository.dart';
 import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 
 class Config extends StatefulWidget {
+  final User user;
+
+  Config({@required this.user}): assert(user != null);
+
   @override
   _Config createState() => _Config();
 }
@@ -46,13 +54,14 @@ class _Config extends State<Config> {
     "前期",
     "後期"
   ];
+  UserInfoRepository userInfoRepository;
 
-  bool isAdvanced = false;
-  int departmentValue = 0;
-  int courseValue = 0;
-  int mainGradeValue = 0;
-  int advancedGradeValue = 0;
-  int termValue = 0;
+  bool isAdvanced;
+  int departmentValue;
+  int courseValue;
+  int mainGradeValue;
+  int advancedGradeValue;
+  int termValue;
 
   DirectSelectItem<String> getDropDownMenuItem(String value) {
     return DirectSelectItem<String>(
@@ -75,6 +84,18 @@ class _Config extends State<Config> {
   @override
   void initState() {
     super.initState();
+    userInfoRepository = FirebaseUserInfoRepository(user: widget.user.firebaseUser);
+    departmentValue = getDepartmentId(widget.user.department) - 11;
+    isAdvanced = widget.user.department == Department.ADVANCED;
+    var course = widget.user.course;
+    courseValue = course == Course.NONE ? 0 : getCourseId(course);
+    if (isAdvanced) {
+      advancedGradeValue = widget.user.grade;
+    }
+    else {
+      mainGradeValue = widget.user.grade;
+    }
+    termValue = getTermId(widget.user.term);
   }
 
   @override
@@ -88,7 +109,6 @@ class _Config extends State<Config> {
             if (stream == null) {
               return Center(child: CircularProgressIndicator());
             }
-            var userInfoRepository = FirebaseUserInfoRepository(user: stream.user.firebaseUser);
             return Scaffold(
               appBar: AppBar(
                   title: Text("設定"),
@@ -132,7 +152,7 @@ class _Config extends State<Config> {
                                               focusedItemDecoration: _getDslDecoration(),
                                               onItemSelectedListener: (item, index, context) {
                                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("学科: $item")));
-                                                userInfoRepository.updateUserData(key: "department", value: item);
+                                                userInfoRepository.updateUserData(key: "department", value: index + 11);
                                                 setState(() {
                                                   if (index == 4) {
                                                     isAdvanced = true;
@@ -185,7 +205,7 @@ class _Config extends State<Config> {
                                               focusedItemDecoration: _getDslDecoration(),
                                               onItemSelectedListener: (item, index, context) {
                                                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("コース: $item")));
-                                                userInfoRepository.updateUserData(key: "course", value: item);
+                                                userInfoRepository.updateUserData(key: "course", value: index + 21);
                                                 setState(() {
                                                   courseValue = index;
                                                 });
@@ -264,6 +284,7 @@ class _Config extends State<Config> {
                               buttonColor: Theme.of(context).buttonColor,
                               buttonLables: ["前期", "後期"],
                               buttonValues: [0, 1],
+
                               radioButtonValue: (value) {
                                 userInfoRepository.updateUserData(key: "term", value: value);
                                 setState(() {
