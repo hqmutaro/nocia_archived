@@ -3,5 +3,7 @@ abstract class UserInfoRepository {
 
   Future<bool> existsUserInfo();
 
+  void updateUserData({String key, dynamic value});
+
   Future<dynamic> getUserInfo();
 }
