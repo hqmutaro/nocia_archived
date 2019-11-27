@@ -10,7 +10,8 @@ enum Course {
   MECHANICAL_SYSTEMS_ENGINEERING,
   ELECTRONIC_COMMUNICATION_SYSTEMS_ENGINEERING,
   INFORMATION_ENGINEERING,
-  BIO_RESOURCES_ENGINEERING
+  BIO_RESOURCES_ENGINEERING,
+  NONE
 }
 
 int getDepartmentId(Department department) {
@@ -23,6 +24,8 @@ int getDepartmentId(Department department) {
       return 13;
     case Department.BIOLOGICAL_RESOURCES_ENGINEERING:
       return 14;
+    case Department.ADVANCED:
+      return 15;
     default:
       throw Exception("Department Not Found");
   }
@@ -38,6 +41,8 @@ Department getDepartment(int id) {
       return Department.MEDIA_INFORMATION_ENGINEERING;
     case 14:
       return Department.BIOLOGICAL_RESOURCES_ENGINEERING;
+    case 15:
+      return Department.ADVANCED;
     default:
       throw Exception("ID Not Found");
   }
@@ -53,6 +58,8 @@ int getCourseId(Course course) {
       return 23;
     case Course.BIO_RESOURCES_ENGINEERING:
       return 24;
+    case Course.NONE:
+      return 0;
     default:
       throw Exception("Course Not Found");
   }
@@ -69,6 +76,6 @@ Course getCourse(int id) {
     case 24:
       return Course.BIO_RESOURCES_ENGINEERING;
     default:
-      throw Exception("ID Not Found");
+      return Course.NONE;
   }
 }
