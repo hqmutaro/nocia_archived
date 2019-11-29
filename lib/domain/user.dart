@@ -15,7 +15,6 @@ class User {
   final Course course;
   final int grade;
   final Term term;
-  dynamic timetable;
 
   User({
     @required this.firebaseUser,
@@ -24,16 +23,14 @@ class User {
     @required this.department,
     @required this.course,
     @required this.grade,
-    @required this.term,
-    @required this.timetable
+    @required this.term
   }):
       assert(firebaseUser != null),
       assert(name != null),
       assert(photoUrl != null),
       assert(department != null),
       assert(grade != null),
-      assert(term != null),
-      assert(timetable != null);
+      assert(term != null);
 
   Future<void> signOut() async{
     var email = ServiceEmailAuth();
@@ -42,10 +39,5 @@ class User {
     await google.handleSignOut();
     var twitter = ServiceTwitterAuth();
     await twitter.handleSignOut();
-  }
-
-  Future<void> updateTimetable() async{
-    var timetableRepository = FirebaseTimetableRepository(uid: firebaseUser.uid);
-    this.timetable = await timetableRepository.lectureTimetables();
   }
 }

@@ -20,12 +20,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     var repository = UserRepository();
     if (event is RequestUser) {
       var firebaseUser = await repository.getUser();
-      var timetableRepository = FirebaseTimetableRepository(uid: firebaseUser.uid);
-      var timetable = await timetableRepository.lectureTimetables();
       var userInfoRepository = FirebaseUserInfoRepository(user: firebaseUser);
       var userData = await userInfoRepository.getUserInfo();
-      print("data $userData");
-      print(getCourse(userData["course"]));
 
       var user = User(
           firebaseUser: firebaseUser,
@@ -34,10 +30,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           department: getDepartment(userData["department"]),
           course: getCourse(userData["course"]),
           grade: userData["grade"],
-          term: getTerm(userData["term"]),
-          timetable: timetable
+          term: getTerm(userData["term"])
       );
-      print("suss $user");
       yield UserStream(user: user);
     }
 
