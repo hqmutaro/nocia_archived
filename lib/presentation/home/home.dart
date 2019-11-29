@@ -1,13 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nocia/application/user/user_bloc.dart';
 import 'package:nocia/application/user/user_event.dart';
 import 'package:nocia/application/user/user_state.dart';
-import 'package:nocia/domain/user.dart';
-import 'package:nocia/infrastructure/repository/user_repository.dart';
+import 'package:nocia/presentation/config/main.dart';
 import 'package:nocia/presentation/report_calculation/calculation_board.dart';
+import 'package:nocia/presentation/timetable/bloc.dart' as timetable;
 import 'package:nocia/presentation/timetable/main.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 import '../news/main.dart';
@@ -126,6 +125,7 @@ class _Home extends State<Home> {
             return Container(child: Center(child: CircularProgressIndicator()), color: Colors.white,);
           }
           if (state is UserStream) {
+
             return Scaffold(
                 backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
                 bottomNavigationBar: makeBottom,
@@ -144,7 +144,10 @@ class _Home extends State<Home> {
                     onPageChanged: onPageChanged,
                     children: [
                       News(),
-                      Timetable(user: state.user),
+                      BlocProvider<timetable.TimetableBloc>(
+                        builder: (BuildContext context) => timetable.TimetableBloc(),
+                        child: Sample(firebaseUser: state.user.firebaseUser),
+                      ),
                       CalculationBoard()
                     ]
                 )
