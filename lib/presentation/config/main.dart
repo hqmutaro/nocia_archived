@@ -1,4 +1,3 @@
-import 'package:custom_radio_grouped_button/CustomButtons/CustomRadioButton.dart';
 import 'package:direct_select_flutter/direct_select_container.dart';
 import 'package:direct_select_flutter/direct_select_item.dart';
 import 'package:direct_select_flutter/direct_select_list.dart';
@@ -13,7 +12,6 @@ import 'package:nocia/domain/repository/user_info_repository.dart';
 import 'package:nocia/domain/term.dart';
 import 'package:nocia/domain/user.dart';
 import 'package:nocia/infrastructure/repository/firebase_user_info_repository.dart';
-import 'package:nocia/infrastructure/repository/user_repository.dart';
 import 'package:nocia/presentation/ui/drawer/nocia_drawer.dart';
 
 class Config extends StatefulWidget {
@@ -88,9 +86,9 @@ class _Config extends State<Config> {
     departmentValue = getDepartmentId(widget.user.department) - 11;
     isAdvanced = widget.user.department == Department.ADVANCED;
     var course = widget.user.course;
-    courseValue = course == Course.NONE ? 0 : getCourseId(course);
+    courseValue = course == Course.NONE ? 0 : getCourseId(course) - 21;
     if (isAdvanced) {
-      advancedGradeValue = widget.user.grade;
+      advancedGradeValue = !(widget.user.grade <= 1) ? 0 : widget.user.grade;
     }
     else {
       mainGradeValue = widget.user.grade;
@@ -280,18 +278,39 @@ class _Config extends State<Config> {
                               margin: EdgeInsets.only(left: 4, bottom: 8, top: 8),
                               child: Text("学期"),
                             ),
-                            CustomRadioButton(
-                              buttonColor: Theme.of(context).buttonColor,
-                              buttonLables: ["前期", "後期"],
-                              buttonValues: [0, 1],
-
-                              radioButtonValue: (value) {
-                                userInfoRepository.updateUserData(key: "term", value: value);
-                                setState(() {
-                                  termValue = value;
-                                });
-                              },
-                              selectedColor: Theme.of(context).accentColor,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                              child: Card(
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 12),
+                                          child: DirectSelectList<String>(
+                                              values: terms,
+                                              defaultItemIndex: termValue,
+                                              itemBuilder: (String value) => getDropDownMenuItem(value),
+                                              focusedItemDecoration: _getDslDecoration(),
+                                              onItemSelectedListener: (item, index, context) {
+                                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("学期: $item")));
+                                                userInfoRepository.updateUserData(key: "term", value: index);
+                                                setState(() {
+                                                  termValue = index;
+                                                });
+                                              }
+                                          ),
+                                        )
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8),
+                                      child: Icon(
+                                        Icons.unfold_more,
+                                        color: Colors.black38,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             )
                           ],
                         ),
