@@ -122,7 +122,7 @@ class FirebaseTimetableRepository extends TimetableRepository{
       "thursday",
       "friday"
     ];
-    var day = days[(cell % 5) - 1];
+    var day = (cell % 5) == 0 ? days[4] : days[(cell % 5) - 1];
     var period = 1;
     while (cell > 5) {
       period++;
@@ -150,7 +150,7 @@ class FirebaseTimetableRepository extends TimetableRepository{
       "thursday",
       "friday"
     ];
-    var day = days[(cell % 5) - 1];
+    var day = (cell % 5) == 0 ? days[4] : days[(cell % 5) - 1];
     var period = 1;
     while (cell > 5) {
       period++;
