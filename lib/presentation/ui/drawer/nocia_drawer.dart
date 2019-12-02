@@ -57,7 +57,7 @@ class NociaDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => BlocProvider<UserBloc>(
                   builder: (BuildContext context) => UserBloc(),
-                  child: Config(),
+                  child: Config(user: user),
                 )));
               },
             ),

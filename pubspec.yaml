@@ -37,7 +37,6 @@ dependencies:
   flutter_twitter_login: ^1.1.0
   direct_select_flutter: ^1.0.5
   find_dropdown: ^0.1.7+1
-  custom_radio_grouped_button: ^1.0.0
   firebase_messaging: ^5.1.8
   equatable: ^0.6.0
   radial_button: ^0.1.4

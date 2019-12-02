@@ -38,8 +38,8 @@ class ServerSubjectDataRepository extends SubjectDataRepository implements Repos
   }
 
   @override
-  Future<dynamic> subjectData(String name, Department department, int grade, Term term) async{
-    var subjectList = await subjectDataList(department, term, grade);
+  Future<dynamic> subjectData(String name, Department department, int grade, Term term, {Course course}) async{
+    var subjectList = await subjectDataList(department, term, grade, course: course);
     return subjectList.where((subjectData) => subjectData["name"] == name).first;
   }
 
