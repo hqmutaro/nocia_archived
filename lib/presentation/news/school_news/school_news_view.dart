@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webfeed/domain/rss_item.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:http/http.dart' as http;
 
 class SchoolNewsView extends StatefulWidget {
 
