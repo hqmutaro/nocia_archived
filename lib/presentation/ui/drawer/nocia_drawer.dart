@@ -58,7 +58,9 @@ class NociaDrawer extends StatelessWidget {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => BlocProvider<UserBloc>(
                   builder: (BuildContext context) => UserBloc(),
                   child: Config(user: user),
-                )));
+                ),
+                    fullscreenDialog: true)
+                );
               },
             ),
             Divider(),
