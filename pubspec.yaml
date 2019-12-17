@@ -25,6 +25,26 @@ dependencies:
   html: ^0.14.0+2
   webview_flutter: ^0.3.0
   intl: ^0.16.0
+  firebase: ^6.0.0
+  flutter_custom_clippers: ^1.1.0
+  flutter_markdown: any
+  bloc: ^1.0.0
+  flutter_bloc: ^1.0.0
+  firebase_auth: ^0.14.0+5
+  google_sign_in: ^4.0.11
+  intro_slider: ^2.2.8
+  flutter_signin_button: ^0.5.2
+  flutter_twitter_login: ^1.1.0
+  direct_select_flutter: ^1.0.5
+  find_dropdown: ^0.1.7+1
+  firebase_messaging: ^5.1.8
+  equatable: ^0.6.0
+  radial_button: ^0.1.4
+  solid_bottom_sheet: ^0.1.8
+  cloud_firestore: ^0.12.10+2
+  firebase_core: ^0.4.2
+  firebase_database: ^3.1.0
+  url_launcher: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -50,6 +70,9 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+
+  assets:
+    - assets/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

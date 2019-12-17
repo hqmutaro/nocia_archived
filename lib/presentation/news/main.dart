@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nocia/presentation/nocia.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nocia/application/user/user_bloc.dart';
+import 'package:nocia/infrastructure/repository/server_rss_repository.dart';
+import 'package:nocia/presentation/news/bloc.dart';
+import 'package:nocia/presentation/news/school_news/school_news_builder.dart';
+import 'package:nocia/presentation/ui/header/wave_clipper_header.dart';
+
+import 'nocia_news/nocia_news_builder.dart';
 
 
 class News extends StatefulWidget {
 
-  const News({Key key}) : super(key: key);
+  News({Key key}) : super(key: key);
 
   @override
   _News createState() => _News();
@@ -15,33 +22,34 @@ class _News extends State<News> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Nocia.getAppBar("ニュース"),
-      drawer: Nocia.getDrawer(),
-      backgroundColor: Color(0xFFEFEFEF),
-      body: Column(
-        children: <Widget>[
-          Padding(
-              padding: const EdgeInsets.only(top: 10, left: 0),
-              child: Text(
-                  "新着情報",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold
-                  )
-              )
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, left: 20),
-            child: Text(
-                "学校の活動",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold
-                )
+        body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 10),
+                WaveClipperHeader(message: "Nocia"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: NociaNewsBuilder(),
+                ),
+                WaveClipperHeader(message: "学校の活動"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: SchoolNewsBuilder(newsType: NewsType.SchoolInfo),
+                ),
+                WaveClipperHeader(message: "受験関連"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: SchoolNewsBuilder(newsType: NewsType.ExamInfo),
+                ),
+                WaveClipperHeader(message: "学生・保護者の方へ"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: SchoolNewsBuilder(newsType: NewsType.ToPerson),
+                ),
+              ],
             )
-          )
-        ],
-      )
+        )
     );
   }
 }

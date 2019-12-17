@@ -2,20 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:nocia/domain/entity.dart';
 import 'package:nocia/domain/term.dart';
 
-class Subject extends Entity {
+class Lecture extends Entity {
 
   final String name;
-  final List<String> staffList;
+  final String id;
+  final List<dynamic> staffList;
   final num grade;
   final Term term;
 
-  Subject({
+  Lecture({
     @required this.name,
+    @required this.id,
     @required this.staffList,
     @required this.grade,
     @required this.term
   }):
       assert(name != null),
+      assert(id != null),
       assert(staffList != null),
       assert(grade != null),
       assert(term != null);
