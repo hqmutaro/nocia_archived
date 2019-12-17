@@ -33,6 +33,11 @@ class _Sample extends State<Sample> with SingleTickerProviderStateMixin {
     _bloc.add(LoadTimetable());
     return BlocBuilder<TimetableBloc, TimetableState>(
       builder: (BuildContext context, TimetableState snapshot) {
+        if (snapshot is Initial) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         if (snapshot is TimetableLoaded) {
           var timetable = snapshot.timetable;
           var period1 = timetable[0]["data"]; // 1限目の1週間分の講義 (月、火、水、木、金)

@@ -85,8 +85,11 @@ class _Config extends State<Config> {
     userInfoRepository = FirebaseUserInfoRepository(user: widget.user.firebaseUser);
     departmentValue = getDepartmentId(widget.user.department) - 11;
     isAdvanced = widget.user.department == Department.ADVANCED;
+    print(isAdvanced);
     var course = widget.user.course;
+    print("ccc $course");
     courseValue = course == Course.NONE ? 0 : getCourseId(course) - 21;
+
     if (isAdvanced) {
       advancedGradeValue = !(widget.user.grade <= 1) ? 0 : widget.user.grade;
     }
@@ -242,24 +245,26 @@ class _Config extends State<Config> {
                                     Expanded(
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 12),
-                                          child: DirectSelectList<String>(
-                                              values: isAdvanced ? advancedGrades : mainGrades,
-                                              defaultItemIndex: isAdvanced ? advancedGradeValue : mainGradeValue,
-                                              itemBuilder: (String value) => getDropDownMenuItem(value),
-                                              focusedItemDecoration: _getDslDecoration(),
-                                              onItemSelectedListener: (item, index, context) {
-                                                Scaffold.of(context).showSnackBar(SnackBar(content: Text("学年: $item")));
-                                                userInfoRepository.updateUserData(key: "grade", value: index + 1);
-                                                setState(() {
-                                                  if (isAdvanced) {
-                                                    advancedGradeValue = index;
-                                                  }
-                                                  else {
-                                                    mainGradeValue = index;
-                                                  }
-                                                });
-                                              }
-                                          ),
+                                          child: SizedBox(
+                                            child: DirectSelectList<String>(
+                                                values: isAdvanced ? advancedGrades : mainGrades,
+                                                defaultItemIndex: isAdvanced ? advancedGradeValue : mainGradeValue,
+                                                itemBuilder: (String value) => getDropDownMenuItem(value),
+                                                focusedItemDecoration: _getDslDecoration(),
+                                                onItemSelectedListener: (item, index, context) {
+                                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("学年: $item")));
+                                                  userInfoRepository.updateUserData(key: "grade", value: index + 1);
+                                                  setState(() {
+                                                    if (isAdvanced) {
+                                                      advancedGradeValue = index;
+                                                    }
+                                                    else {
+                                                      mainGradeValue = index;
+                                                    }
+                                                  });
+                                                }
+                                            ),
+                                          )
                                         )
                                     ),
                                     Padding(

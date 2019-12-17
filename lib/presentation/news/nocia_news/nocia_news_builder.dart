@@ -22,7 +22,6 @@ class NociaNewsBuilder extends StatelessWidget {
         return FutureBuilder<List<dynamic>>(
           future: repository.getNews(),
           builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-            print(snapshot.data);
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             }

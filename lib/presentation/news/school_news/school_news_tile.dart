@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nocia/presentation/news/school_news/school_news_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webfeed/domain/rss_item.dart';
 
-Card getCard(BuildContext context, RssItem data) {
+Card getCard(BuildContext context, RssItem data, bool isPDF) {
   return Card(
       elevation: 8.0,
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -16,7 +17,7 @@ Card getCard(BuildContext context, RssItem data) {
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(width: 1.0, color: Colors.black26))),
-                child: Icon(Icons.accessibility_new, color: Colors.white),
+                child: isPDF ? Icon(Icons.picture_as_pdf, color: Colors.white): Icon(Icons.accessibility_new, color: Colors.white),
               ),
               title: DefaultTextStyle(
                   style:  TextStyle(color: Colors.white),
@@ -42,8 +43,17 @@ Card getCard(BuildContext context, RssItem data) {
                   padding: EdgeInsets.only(top: 10.0),
                 ),
               ),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SchoolNewsView(item: data)));
+              onTap: () async{
+                if (isPDF) {
+                  if (await canLaunch(data.link)) {
+                    await launch(data.link);
+                  } else {
+                    throw 'Could not Launch ${data.link}';
+                  }
+                }
+                else {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SchoolNewsView(item: data)));
+                }
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white)
           )

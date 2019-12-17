@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nocia/application/user/user_bloc.dart';
+import 'package:nocia/infrastructure/repository/server_rss_repository.dart';
 import 'package:nocia/presentation/news/bloc.dart';
 import 'package:nocia/presentation/news/school_news/school_news_builder.dart';
 import 'package:nocia/presentation/ui/header/wave_clipper_header.dart';
@@ -34,8 +35,18 @@ class _News extends State<News> {
                 WaveClipperHeader(message: "学校の活動"),
                 BlocProvider<NewsBloc>(
                   builder: (BuildContext context) => NewsBloc(),
-                  child: SchoolNewsBuilder(),
-                )
+                  child: SchoolNewsBuilder(newsType: NewsType.SchoolInfo),
+                ),
+                WaveClipperHeader(message: "受験関連"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: SchoolNewsBuilder(newsType: NewsType.ExamInfo),
+                ),
+                WaveClipperHeader(message: "学生・保護者の方へ"),
+                BlocProvider<NewsBloc>(
+                  builder: (BuildContext context) => NewsBloc(),
+                  child: SchoolNewsBuilder(newsType: NewsType.ToPerson),
+                ),
               ],
             )
         )

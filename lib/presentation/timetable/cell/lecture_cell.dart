@@ -65,7 +65,7 @@ class _LectureCell extends State<LectureCell> {
                       Container(
                         child: Center(
                           child: Text(
-                            subject == null ? "" : teacher.substring(0, 2) + "…",
+                            subject == null ? "" : teacher.substring(1, 3) + "…",
                             style: TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold

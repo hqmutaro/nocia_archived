@@ -7,7 +7,9 @@ import 'package:nocia/presentation/news/school_news/school_news_tile.dart';
 
 class SchoolNewsBuilder extends StatelessWidget {
 
-  SchoolNewsBuilder();
+  NewsType newsType;
+
+  SchoolNewsBuilder({@required this.newsType}): assert(newsType != null);
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +23,13 @@ class SchoolNewsBuilder extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
           return FutureBuilder(
-            future: repository.getItems(),
+            future: repository.getItems(this.newsType),
             builder: (BuildContext context, AsyncSnapshot<List<RssItem>> snapshot) {
               if (snapshot.hasData) {
                 var widgets = <Widget>[];
                 snapshot.data.forEach((data) {
                   if (snapshot.data.indexOf(data) <= 4) {
-                    widgets.add(getCard(context, data));
+                    widgets.add(getCard(context, data, data.link.substring(28, 37) == "UserFiles"));
                   }
                 });
                 return Column(children: widgets);
